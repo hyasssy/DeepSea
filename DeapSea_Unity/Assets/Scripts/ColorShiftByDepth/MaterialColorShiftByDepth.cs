@@ -18,7 +18,7 @@ public class MaterialColorShiftByDepth : MonoBehaviour
 
     void Start()
     {
-        _params = Resources.Load<Params>("WaterParams");
+        _params = Resources.Load<Params>("Params");
         playercam = Camera.main.transform;
         material = obj.GetComponent<Renderer>().material;
     }
@@ -32,7 +32,7 @@ public class MaterialColorShiftByDepth : MonoBehaviour
     }
 
     private void Reset() {//シーン上で調節した時に、コンポーネントをリセットすると自動取得する。
-        _params = Resources.Load<Params>("WaterParams");
+        _params = Resources.Load<Params>("Params");
         playercam = Camera.main.transform;
         material = obj.GetComponent<Renderer>().material;
         var p = -playercam.position.y / _params.WaterDepth;//水面から水深に対する現在の深さのパラメータ

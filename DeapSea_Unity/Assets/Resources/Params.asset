@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04f2af35119d34b868e2e12a804cccee, type: 3}
-  m_Name: WaterParams
+  m_Name: Params
   m_EditorClassIdentifier: 
-  <TopRange>k__BackingField: -0.2
+  <TopRange>k__BackingField: 0.2
   BottomRange: 0.7
-  <WaterDepth>k__BackingField: 4.69
+  <WaterDepth>k__BackingField: 9.4
   <BowlSize>k__BackingField: {x: 50, y: 50}
+  <RelicsAttachmentDuration>k__BackingField: 1
+  <RelicsRotateSpeed>k__BackingField: 26
+  _isDisplayConsolePanel: 0

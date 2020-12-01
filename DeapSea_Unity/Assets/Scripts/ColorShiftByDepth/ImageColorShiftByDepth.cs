@@ -8,14 +8,14 @@ public class ImageColorShiftByDepth : MonoBehaviour
     public GameObject obj;
     #endregion
 
-    
+
     Image imageComponent;
     Params _params;
     Transform playercam;
 
     void Start()
     {
-        _params = Resources.Load<Params>("WaterParams");
+        _params = Resources.Load<Params>("Params");
         playercam = Camera.main.transform;
         imageComponent = obj.GetComponent<Image>();
     }
@@ -28,7 +28,7 @@ public class ImageColorShiftByDepth : MonoBehaviour
     }
 
     private void Reset() {//シーン上で調節した時に、コンポーネントをリセットすると自動取得する。
-        _params = Resources.Load<Params>("WaterParams");
+        _params = Resources.Load<Params>("Params");
         playercam = Camera.main.transform;
         imageComponent = obj.GetComponent<Image>();
         var p = -playercam.position.y / _params.WaterDepth;//水面から水深に対する現在の深さのパラメータ

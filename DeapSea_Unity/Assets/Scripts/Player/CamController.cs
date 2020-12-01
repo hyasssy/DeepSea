@@ -1,37 +1,40 @@
 ﻿using UnityEngine;
+using UniRx;
+using UniRx.Triggers;
 
 public class CamController : MonoBehaviour//for debug
 {
     [Tooltip("true:正面に向かって進む、false:上下前後左右に操作できる")]
     public bool goForwardOrNot = false;
     [SerializeField]
-    Transform _seaContainer;//Aquasオブジェをカメラに追随して動かすことによって、無限の海にする。
+    Transform _seaContainer;//海をカメラに追随して動かすことによって、無限の海にする。
+    [SerializeField]
+    Transform _castle;//遠くに見える建造物
     Transform _playerCam;
     float _topRange;
     float _bottomRange;
-
     KeyCode[] _movekeys = {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Q, KeyCode.E};
     KeyCode[] _rotatekeys = {KeyCode.UpArrow, KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow};
     public float _moveSpeed = 1f;
     public float _rotateSpeed = 10f;
+    public float _rotateAcceleration = 20f;
     public float _goForwardSpeed = 0.2f;
-    
+    float[] _tempRotateSpeed = {0,0};//{vertical, horizontal}
+
     private void Start() {
-        Params waterParams = Resources.Load<Params>("WaterParams");
+        Params waterParams = Resources.Load<Params>("Params");
         _playerCam = Camera.main.transform;
         _bottomRange = waterParams.WaterDepth - waterParams.BottomRange;//水深3mなら3（-3じゃない。）
-        _topRange = waterParams.TopRange;
-    }
-    private void Update() {
+        _topRange = -waterParams.TopRange;
         if(goForwardOrNot){
-            GoForward();
+            this.UpdateAsObservable().Subscribe(_ => GoForward());
         }else{
-            OptionalControl();
+            this.UpdateAsObservable().Subscribe(_ => OptionalControl());
         }
     }
 
     void GoForward(){
-        Rotate();
+        AcceleratedRotate();
         Vector3 targetVec = _playerCam.forward * _goForwardSpeed * Time.deltaTime;
         transform.position += targetVec;
         float currentY = _playerCam.transform.position.y;
@@ -42,6 +45,7 @@ public class CamController : MonoBehaviour//for debug
         }
         Vector3 horizontalVec = Vector3.Scale(targetVec, new Vector3(1,0,1));//高さは変えず
         _seaContainer.position += horizontalVec;
+        _castle.position += horizontalVec;
     }
 
     void OptionalControl(){
@@ -55,16 +59,43 @@ public class CamController : MonoBehaviour//for debug
         Vector3 verticalDis = Vector3.up * (moveInputs[4]-moveInputs[5]) * _moveSpeed * Time.deltaTime;
         transform.position += horizontalDis + verticalDis;
         _seaContainer.position += horizontalDis;//海も水平方向にカメラを追随。
-        Rotate();
+        AcceleratedRotate();
     }
 
-    void Rotate(){
-        int[] rotateInputs = {0,0,0,0};
-        for(int i=0;i<4;i++){
-            if(Input.GetKey(_rotatekeys[i])){
-                rotateInputs[i]++;
+
+    void AcceleratedRotate(){
+        _tempRotateSpeed[0] = Accelerate(_tempRotateSpeed[0],_rotatekeys[2], _movekeys[2], _rotatekeys[0], _movekeys[0], _rotateSpeed, _rotateAcceleration);
+        _tempRotateSpeed[1] = Accelerate(_tempRotateSpeed[1],_rotatekeys[3], _movekeys[3], _rotatekeys[1], _movekeys[1], _rotateSpeed, _rotateAcceleration);
+        transform.localEulerAngles += new Vector3(_tempRotateSpeed[0] * Time.deltaTime, _tempRotateSpeed[1] * Time.deltaTime, 0);
+    }
+
+    /// <summary>
+    /// 加速度的にspeedをコントロール
+    /// </summary>
+    /// <param name="keyPosi1">キーの割当。kay1-key2で正負判断</param>
+    float Accelerate(float speed, KeyCode keyPosi1, KeyCode keyPosi2, KeyCode keyNega1, KeyCode keyNega2, float maxSpeed, float acceleration){
+        float tempAcceleration = acceleration * Time.deltaTime;//そのフレームの加速量
+        bool posiInput = !Input.GetKey(keyPosi1) && !Input.GetKey(keyPosi2) ? false : true;
+        bool negaInput = !Input.GetKey(keyNega1) && !Input.GetKey(keyNega2) ? false : true;
+        if(posiInput && negaInput){//両方押してるとき
+            //何もしない
+        }else if(posiInput){//ポジティブだけ押してるとき
+            if(speed < maxSpeed){
+                speed += tempAcceleration;
+            }
+        }else if(negaInput){//ネガティブだけ押してる
+            if(speed > -maxSpeed){
+                speed -= tempAcceleration;
+            }
+        }else{//該当方向の入力なし
+            if(Mathf.Abs(speed) < tempAcceleration){
+                speed = 0;
+            }else if(speed > 0){
+                speed -= tempAcceleration;
+            }else{
+                speed += tempAcceleration;
             }
         }
-        transform.localEulerAngles += new Vector3((rotateInputs[2]-rotateInputs[0]) * _rotateSpeed * Time.deltaTime, (rotateInputs[3]-rotateInputs[1]) * _rotateSpeed * Time.deltaTime, 0);
+        return speed;
     }
 }
