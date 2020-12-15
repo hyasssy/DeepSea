@@ -10,28 +10,28 @@ public class ImageColorShiftByDepth : MonoBehaviour
 
 
     Image imageComponent;
-    Params _params;
+    SeaParamManager _seaParamManager;
     Transform playercam;
 
     void Start()
     {
-        _params = Resources.Load<Params>("Params");
+        _seaParamManager = FindObjectOfType<SeaParamManager>();
         playercam = Camera.main.transform;
         imageComponent = obj.GetComponent<Image>();
     }
 
     void Update()
     {
-        var p = -playercam.position.y / _params.WaterDepth;//水面から水深に対する現在の深さのパラメータ
+        var p = -playercam.position.y / _seaParamManager.CurrentWaterDepth;//水面から水深に対する現在の深さのパラメータ
         var targetColor = Color.Lerp(topColor, bottomColor, p);
         imageComponent.color = targetColor;
     }
 
     private void Reset() {//シーン上で調節した時に、コンポーネントをリセットすると自動取得する。
-        _params = Resources.Load<Params>("Params");
+        _seaParamManager = FindObjectOfType<SeaParamManager>();
         playercam = Camera.main.transform;
         imageComponent = obj.GetComponent<Image>();
-        var p = -playercam.position.y / _params.WaterDepth;//水面から水深に対する現在の深さのパラメータ
+        var p = -playercam.position.y / _seaParamManager.CurrentWaterDepth;//水面から水深に対する現在の深さのパラメータ
         var targetColor = Color.Lerp(topColor, bottomColor, p);
         imageComponent.color = targetColor;
     }

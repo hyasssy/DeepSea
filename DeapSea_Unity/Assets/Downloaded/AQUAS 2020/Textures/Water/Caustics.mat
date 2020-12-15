@@ -56,16 +56,16 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
-        m_Texture: {fileID: 2800000, guid: 7390e4b47e34650448d5a6609e065b4c, type: 3}
+        m_Texture: {fileID: 2800000, guid: d9727eb532cbb524492e06b8743dcbc2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpScale: 1
     - _CausticsScale: 6
     - _Cutoff: 0.5
-    - _DepthFade: -10
+    - _DepthFade: -50
     - _DetailNormalMapScale: 1
-    - _DistanceVisibility: 10
+    - _DistanceVisibility: 16.96
     - _DstBlend: 0
     - _Fade: 0.5
     - _GlossMapScale: 1

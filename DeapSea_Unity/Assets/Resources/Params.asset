@@ -12,9 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f2af35119d34b868e2e12a804cccee, type: 3}
   m_Name: Params
   m_EditorClassIdentifier: 
-  <TopRange>k__BackingField: 0.2
-  BottomRange: 0.7
-  <WaterDepth>k__BackingField: 9.4
+  <WaterParamPack>k__BackingField:
+  - topRange: -0.2
+    bottomRange: -5
+    waterDepth: 9.95
+    relics:
+    - {fileID: 4782578863749654268, guid: e6f3bdb855bfe4cbbbb6010fce83906b, type: 3}
+    phase_relicsAmount: 15
+    camPosition: -1.64
+  - topRange: -6
+    bottomRange: -13
+    waterDepth: 18
+    relics:
+    - {fileID: 539355826188989394, guid: 8ba33ade9c3ee477fb23f880e558cea8, type: 3}
+    - {fileID: 4782578863749654268, guid: e6f3bdb855bfe4cbbbb6010fce83906b, type: 3}
+    phase_relicsAmount: 30
+    camPosition: -2.5
+  - topRange: -15
+    bottomRange: -50
+    waterDepth: 51
+    relics:
+    - {fileID: 4782578863749654268, guid: e6f3bdb855bfe4cbbbb6010fce83906b, type: 3}
+    - {fileID: 539355826188989394, guid: 8ba33ade9c3ee477fb23f880e558cea8, type: 3}
+    - {fileID: 6930197308476473730, guid: db05e818e9d8d4fd7b2700e990ffa27e, type: 3}
+    phase_relicsAmount: 1000
+    camPosition: -4
   <BowlSize>k__BackingField: {x: 50, y: 50}
   <RelicsAttachmentDuration>k__BackingField: 1
   <RelicsRotateSpeed>k__BackingField: 26

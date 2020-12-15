@@ -4,15 +4,12 @@ using UniRx.Triggers;
 
 public class CamController : MonoBehaviour//for debug
 {
-    [Tooltip("true:正面に向かって進む、false:上下前後左右に操作できる")]
-    public bool goForwardOrNot = false;
     [SerializeField]
     Transform _seaContainer;//海をカメラに追随して動かすことによって、無限の海にする。
     [SerializeField]
     Transform _castle;//遠くに見える建造物
     Transform _playerCam;
-    float _topRange;
-    float _bottomRange;
+    SeaParamManager _seaParamManager;
     KeyCode[] _movekeys = {KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Q, KeyCode.E};
     KeyCode[] _rotatekeys = {KeyCode.UpArrow, KeyCode.LeftArrow, KeyCode.DownArrow, KeyCode.RightArrow};
     public float _moveSpeed = 1f;
@@ -23,32 +20,31 @@ public class CamController : MonoBehaviour//for debug
 
     private void Start() {
         Params waterParams = Resources.Load<Params>("Params");
+        _seaParamManager = FindObjectOfType<SeaParamManager>();
         _playerCam = Camera.main.transform;
-        _bottomRange = waterParams.WaterDepth - waterParams.BottomRange;//水深3mなら3（-3じゃない。）
-        _topRange = -waterParams.TopRange;
-        if(goForwardOrNot){
-            this.UpdateAsObservable().Subscribe(_ => GoForward());
-        }else{
-            this.UpdateAsObservable().Subscribe(_ => OptionalControl());
-        }
+        this.UpdateAsObservable().Subscribe(_ => GoForward());
     }
 
     void GoForward(){
         AcceleratedRotate();
         Vector3 targetVec = _playerCam.forward * _goForwardSpeed * Time.deltaTime;
         transform.position += targetVec;
-        float currentY = _playerCam.transform.position.y;
-        if(currentY > _topRange){
-            transform.position -= new Vector3(0,currentY - _topRange,0);//プレイヤーの親オブジェを下げることで対応。
-        }else if(currentY < -_bottomRange){
-            transform.position -= new Vector3(0, currentY - -_bottomRange, 0);
-        }
+        RestrictRange();
         Vector3 horizontalVec = Vector3.Scale(targetVec, new Vector3(1,0,1));//高さは変えず
-        _seaContainer.position += horizontalVec;
-        _castle.position += horizontalVec;
+        _seaContainer.position += horizontalVec;//海をプレイヤーに追随させる
+        _castle.position += horizontalVec;//城を追随させる
     }
 
-    void OptionalControl(){
+    void RestrictRange(){
+        float currentY = _playerCam.transform.position.y;
+        if(currentY > _seaParamManager.CurrentTopRange){
+            transform.position -= new Vector3(0,currentY - _seaParamManager.CurrentTopRange,0);//プレイヤーの親オブジェを下げることで対応。
+        }else if(currentY < _seaParamManager.CurrentBottomRange){
+            transform.position -= new Vector3(0, currentY - _seaParamManager.CurrentBottomRange, 0);
+        }
+    }
+
+    /*void OptionalControl(){
         int[] moveInputs = {0,0,0,0,0,0};
         for(int i=0;i<6;i++){
             if(Input.GetKey(_movekeys[i])){
@@ -60,7 +56,7 @@ public class CamController : MonoBehaviour//for debug
         transform.position += horizontalDis + verticalDis;
         _seaContainer.position += horizontalDis;//海も水平方向にカメラを追随。
         AcceleratedRotate();
-    }
+    }*/
 
 
     void AcceleratedRotate(){
