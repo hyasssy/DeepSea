@@ -14,7 +14,7 @@ public class SeaParamManager : MonoBehaviour
     }
     public float CurrentTopRange{get; private set;}
     public float CurrentBottomRange{get; private set;}
-    void Start()
+    void Awake()
     {
         _params = Resources.Load<Params>("Params");
         Vector2 bowlSize = _params.BowlSize;

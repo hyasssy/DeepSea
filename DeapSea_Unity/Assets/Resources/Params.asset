@@ -15,14 +15,14 @@ MonoBehaviour:
   <WaterParamPack>k__BackingField:
   - topRange: -0.2
     bottomRange: -5
-    waterDepth: 9.95
+    waterDepth: 6
     relics:
     - {fileID: 4782578863749654268, guid: e6f3bdb855bfe4cbbbb6010fce83906b, type: 3}
     phase_relicsAmount: 15
     camPosition: -1.64
   - topRange: -6
     bottomRange: -13
-    waterDepth: 18
+    waterDepth: 15
     relics:
     - {fileID: 539355826188989394, guid: 8ba33ade9c3ee477fb23f880e558cea8, type: 3}
     - {fileID: 4782578863749654268, guid: e6f3bdb855bfe4cbbbb6010fce83906b, type: 3}

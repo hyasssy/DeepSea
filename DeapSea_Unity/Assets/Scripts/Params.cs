@@ -22,13 +22,6 @@ public class Params : ScriptableObject
     public float RelicsAttachmentDuration {get; private set;} = 1f;
     [field: SerializeField, RenameField(nameof(RelicsRotateSpeed))]
     public float RelicsRotateSpeed {get; private set;} = 1f;
-    [SerializeField]
-    bool _isDisplayConsolePanel = true;
-
-    private void OnValidate() {
-        Debug.Log("Params>>OnValidate Called");
-        GameObject.Find("MainCanvas").transform.Find("DebugLogObject").gameObject.SetActive(_isDisplayConsolePanel);
-        GameObject.Find("Sea").transform.localScale = new Vector3(BowlSize.x/10, WaterParamPack[0].waterDepth/10, BowlSize.y/10);
-    }
+    
 }
 
